@@ -27,7 +27,7 @@ class RedisTest extends TestCase
         $client = new \Predis\Client(
             [
                 'host' => '127.0.0.1',
-                'password' => 'redis',
+                'password' => null,
                 'database' => 0
             ]
         );
