@@ -1,0 +1,33 @@
+language: php
+
+matrix:
+  fast_finish: true
+
+php:
+  - 5.6
+  - 7.1
+
+  # cache vendor dirs
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - vendor
+
+services:
+  - redis
+
+install:
+  - travis_retry composer self-update
+  - composer config -g github-oauth.github.com caf16441da5ba578b34a765e67e3bf2ad1941389
+  - travis_retry composer install --prefer-dist --no-interaction
+
+before_script:
+  - travis_retry composer self-update
+  - travis_retry composer install --no-interaction --prefer-source --dev
+
+script:
+  - ./vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+
+after_script:
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
