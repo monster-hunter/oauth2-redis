@@ -12,7 +12,6 @@ use monsterhunter\redis\relational\RedisClient;
 
 class RedisTest extends TestCase
 {
-
     /**
      * @var RedisClient
      */
@@ -118,7 +117,6 @@ class RedisTest extends TestCase
             $token = $token . $token;
             $this->assertTrue($this->redisClient->hget($token) == []);
         }
-
     }
 
     public function testDeleteByToken()
