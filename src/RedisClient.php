@@ -16,12 +16,19 @@ class RedisClient
     public $client;
 
     /**
-     * PredisClient constructor.
-     * @param $client \Redis | \Predis\Client
+     * @var array
      */
-    public function __construct($client)
+    public $params;
+
+    /**
+     *  初始化
+     */
+    public function init()
     {
-        $this->client = $client;
+        if($this->params['password'] == 'null' || $this->params['password']==''){
+            unset($this->params['password']);
+        }
+        $this->client = new \Predis\Client($this->params);
     }
 
     /**

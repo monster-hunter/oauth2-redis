@@ -24,14 +24,15 @@ class RedisTest extends TestCase
         /**
          * @var $client \Predis\Client
          */
-        $client = new \Predis\Client(
+        $params =
             [
                 'host' => '127.0.0.1',
                 'password' => null,
                 'database' => 0
-            ]
-        );
-        $this->redisClient = new RedisClient($client);
+            ];
+        $this->redisClient = new RedisClient();
+        $this->redisClient->params = $params;
+        $this->redisClient->init();
         $this->redisClient->client->flushall();
         $this->generateTestData();
     }
