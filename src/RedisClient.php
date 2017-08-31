@@ -25,7 +25,7 @@ class RedisClient
      */
     public function init()
     {
-        if($this->params['password'] == 'null' || $this->params['password']==''){
+        if ($this->params['password'] == 'null' || $this->params['password'] == '') {
             unset($this->params['password']);
         }
         $this->client = new \Predis\Client($this->params);
