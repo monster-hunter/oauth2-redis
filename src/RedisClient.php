@@ -21,19 +21,21 @@ class RedisClient
     public $params;
 
     /**
-     * @var string  client类
-     */
-    public $clientClass;
-
-    /**
      *  初始化
      */
     public function init()
     {
-        if ($this->params['password'] == 'null' || $this->params['password'] == '') {
-            unset($this->params['password']);
+        $this->dealWithParams();
+        $this->client = new \Predis\Client($this->params);
+    }
+
+    private function dealWithParams()
+    {
+        if (isset($this->params['password'])) {
+            if ($this->params['password'] == 'null' || $this->params['password'] == '') {
+                unset($this->params['password']);
+            }
         }
-        $this->client = new $this->clientClass($this->params);
     }
 
     /**

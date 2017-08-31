@@ -32,7 +32,6 @@ class RedisTest extends TestCase
             ];
         $this->redisClient = new RedisClient();
         $this->redisClient->params = $params;
-        $this->redisClient->clientClass = '\Predis\Client';
         $this->redisClient->init();
         $this->redisClient->client->flushall();
         $this->generateTestData();
