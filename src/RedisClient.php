@@ -21,6 +21,11 @@ class RedisClient
     public $params;
 
     /**
+     * @var string
+     */
+    public $clientClass;
+
+    /**
      *  初始化
      */
     public function init()
@@ -28,7 +33,7 @@ class RedisClient
         if ($this->params['password'] == 'null' || $this->params['password'] == '') {
             unset($this->params['password']);
         }
-        $this->client = new \Predis\Client($this->params);
+        $this->client = new $this->clientClass($this->params);
     }
 
     /**
