@@ -21,7 +21,7 @@ class RedisClient
     public $params;
 
     /**
-     * @var string
+     * @var string  client类
      */
     public $clientClass;
 
