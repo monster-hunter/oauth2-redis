@@ -10,6 +10,8 @@
  
     key  => value
     value => key
+    
+如果没有设置密码 参数里面不要传password
  
  
  

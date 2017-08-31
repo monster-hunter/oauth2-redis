@@ -21,21 +21,12 @@ class RedisClient
     public $params;
 
     /**
-     *  初始化
+     * RedisClient constructor.
+     * @param array $params   ['host' => '127.0.0.1','password' => 'pwd','database' => 0];
      */
-    public function init()
+    public function __construct(array $params)
     {
-        $this->dealWithParams();
-        $this->client = new \Predis\Client($this->params);
-    }
-
-    private function dealWithParams()
-    {
-        if (isset($this->params['password'])) {
-            if ($this->params['password'] == 'null' || $this->params['password'] == '') {
-                unset($this->params['password']);
-            }
-        }
+        $this->client = new \Predis\Client($params);
     }
 
     /**
@@ -43,7 +34,7 @@ class RedisClient
      * @param $token string
      * @param array $arr ['access_token'=>'','client_id' => 'client1', 'expires'=>1, 'union_id' => 'union_id', 'user_id' => '1', 'scope'=>1];
      */
-    public function hset($token, array $arr)
+    public function setToken($token, array $arr)
     {
         $tokenKey = $this->getPrefix() . $token;
         $this->client->hmset($tokenKey, $arr);
@@ -60,7 +51,7 @@ class RedisClient
      * @param $token
      * @return array
      */
-    public function hget($token)
+    public function getToken($token)
     {
         $key = $this->getPrefix() . $token;
         return $this->client->hgetall($key);
@@ -70,7 +61,7 @@ class RedisClient
      * 通过键删除
      * @param $token
      */
-    public function deleteByToken($token)
+    public function deleteToken($token)
     {
         $key = $this->getPrefix() . $token;
         $this->client->del([$key]);
@@ -81,7 +72,7 @@ class RedisClient
      * delete by user_id
      * @param $userId
      */
-    public function deleteByUserId($userId)
+    public function deleteUserToken($userId)
     {
         $userIdKeys = $this->getKeysByUserId($userId);
         $this->delKeys($userIdKeys);
@@ -92,7 +83,7 @@ class RedisClient
      * @param $clientId
      * @param $userId
      */
-    public function deleteByUserIdAndClientId($clientId, $userId)
+    public function deleteUserClientToken($clientId, $userId)
     {
         $userIidClientIdKeys = $this->getKeysByClientIdAndUserId($clientId, $userId);
         $this->delKeys($userIidClientIdKeys);
@@ -103,7 +94,7 @@ class RedisClient
      * @param $clientId
      * @return void
      */
-    public function deleteByClientId($clientId)
+    public function deleteClientToken($clientId)
     {
         $clientIdKeys = $this->getKeysByClientId($clientId);
         $this->delKeys($clientIdKeys);
@@ -115,14 +106,14 @@ class RedisClient
      * @param $clientId
      * @param $userId
      */
-    public function revokeOldToken($currentToken, $clientId, $userId)
+    public function deleteOldUserClientToken($currentToken, $clientId, $userId)
     {
         $clientIidIUserIdKeys = $this->getKeysByClientIdAndUserId($clientId, $userId);
         if (count($clientIidIUserIdKeys) > 0) {
             foreach ($clientIidIUserIdKeys as $key => $v) {
                 $token = $this->client->get($v);
                 if ($token !== $currentToken) {
-                    $this->deleteByToken($token);
+                    $this->deleteToken($token);
                     $this->client->del($v);
                 }
             }
@@ -184,7 +175,7 @@ class RedisClient
         if (count($keys) > 0) {
             foreach ($keys as $key => $v) {
                 $token = $this->client->get($v);
-                $this->deleteByToken($token);
+                $this->deleteToken($token);
                 $this->client->del($v);
             }
         }

@@ -27,12 +27,10 @@ class RedisTest extends TestCase
         $params =
             [
                 'host' => '127.0.0.1',
-                'password' => null,
+                 'password' => null,
                 'database' => 0
             ];
-        $this->redisClient = new RedisClient();
-        $this->redisClient->params = $params;
-        $this->redisClient->init();
+        $this->redisClient = new RedisClient($params);
         $this->redisClient->client->flushall();
         $this->generateTestData();
     }
@@ -43,34 +41,34 @@ class RedisTest extends TestCase
             $token = 'token' . $i;
             $expires = time() + 5;
             $value = ['access_token' => $token, 'client_id' => 'client_id', 'expires' => $expires, 'union_id' => 'union_id1', 'user_id' => 'user_id', 'scope' => '1'];
-            $this->redisClient->hset($token, $value);
+            $this->redisClient->setToken($token, $value);
             $value = ['access_token' => $token, 'client_id' => 'client_id', 'expires' => $expires, 'union_id' => 'union_id1', 'user_id' => 'user_id1', 'scope' => '1'];
-            $this->redisClient->hset($token . $token, $value);
+            $this->redisClient->setToken($token . $token, $value);
         }
     }
 
-    public function testDeleteByUserId()
+    public function testDeleteUserToken()
     {
         for ($i = 0; $i < 10; $i++) {
             $token = 'token' . $i;
-            $this->assertFalse($this->redisClient->hget($token) == []);
+            $this->assertFalse($this->redisClient->getToken($token) == []);
         }
-        $this->redisClient->deleteByUserId('user_id');
+        $this->redisClient->deleteUserToken('user_id');
         for ($i = 0; $i < 10; $i++) {
             $token = 'token' . $i;
-            $this->assertTrue($this->redisClient->hget($token) == []);
+            $this->assertTrue($this->redisClient->getToken($token) == []);
         }
 
         for ($i = 0; $i < 10; $i++) {
             $token = 'token' . $i;
             $token = $token . $token;
-            $this->assertFalse($this->redisClient->hget($token) == []);
+            $this->assertFalse($this->redisClient->getToken($token) == []);
         }
-        $this->redisClient->deleteByUserId('user_id1');
+        $this->redisClient->deleteUserToken('user_id1');
         for ($i = 0; $i < 10; $i++) {
             $token = 'token' . $i;
             $token = $token . $token;
-            $this->assertTrue($this->redisClient->hget($token) == []);
+            $this->assertTrue($this->redisClient->getToken($token) == []);
         }
     }
 
@@ -78,18 +76,18 @@ class RedisTest extends TestCase
     {
         for ($i = 0; $i < 10; $i++) {
             $token = 'token' . $i;
-            $this->assertFalse($this->redisClient->hget($token) == []);
+            $this->assertFalse($this->redisClient->getToken($token) == []);
             $token = $token . $token;
-            $this->assertFalse($this->redisClient->hget($token) == []);
+            $this->assertFalse($this->redisClient->getToken($token) == []);
         }
 
-        $this->redisClient->deleteByClientId('client_id');
+        $this->redisClient->deleteClientToken('client_id');
 
         for ($i = 0; $i < 10; $i++) {
             $token = 'token' . $i;
-            $this->assertTrue($this->redisClient->hget($token) == []);
+            $this->assertTrue($this->redisClient->getToken($token) == []);
             $token = $token . $token;
-            $this->assertTrue($this->redisClient->hget($token) == []);
+            $this->assertTrue($this->redisClient->getToken($token) == []);
         }
     }
 
@@ -97,37 +95,37 @@ class RedisTest extends TestCase
     {
         for ($i = 0; $i < 10; $i++) {
             $token = 'token' . $i;
-            $this->assertFalse($this->redisClient->hget($token) == []);
+            $this->assertFalse($this->redisClient->getToken($token) == []);
             $token = $token . $token;
-            $this->assertFalse($this->redisClient->hget($token) == []);
+            $this->assertFalse($this->redisClient->getToken($token) == []);
         }
 
-        $this->redisClient->deleteByUserIdAndClientId('client_id', 'user_id');
+        $this->redisClient->deleteUserClientToken('client_id', 'user_id');
 
         for ($i = 0; $i < 10; $i++) {
             $token = 'token' . $i;
-            $this->assertTrue($this->redisClient->hget($token) == []);
+            $this->assertTrue($this->redisClient->getToken($token) == []);
             $token = $token . $token;
-            $this->assertFalse($this->redisClient->hget($token) == []);
+            $this->assertFalse($this->redisClient->getToken($token) == []);
         }
 
-        $this->redisClient->deleteByUserIdAndClientId('client_id', 'user_id1');
+        $this->redisClient->deleteUserClientToken('client_id', 'user_id1');
 
         for ($i = 0; $i < 10; $i++) {
             $token = 'token' . $i;
             $token = $token . $token;
-            $this->assertTrue($this->redisClient->hget($token) == []);
+            $this->assertTrue($this->redisClient->getToken($token) == []);
         }
     }
 
-    public function testDeleteByToken()
+    public function testDeleteToken()
     {
         $token = time();
         $expires = $token + 5 * 60;
         $value = ['access_token' => $token, 'client_id' => 'client_id', 'expires' => $expires, 'union_id' => 'union_id1', 'user_id' => 'user_id', 'scope' => '1'];
-        $this->redisClient->hset($token, $value);
-        $this->redisClient->deleteByToken($token);
-        $this->assertTrue($this->redisClient->hget($token) == []);
+        $this->redisClient->getToken($token, $value);
+        $this->redisClient->deleteToken($token);
+        $this->assertTrue($this->redisClient->getToken($token) == []);
     }
 
     public function testRevokeOldToken()
@@ -135,14 +133,14 @@ class RedisTest extends TestCase
         $token = time();
         $expires = $token + 5 * 60;
         $value = ['access_token' => $token, 'client_id' => 'client_id', 'expires' => $expires, 'union_id' => 'union_id1', 'user_id' => 'user_id', 'scope' => '1'];
-        $this->redisClient->hset($token, $value);
-        $this->redisClient->revokeOldToken($token, 'client_id', 'user_id');
+        $this->redisClient->getToken($token, $value);
+        $this->redisClient->deleteOldUserClientToken($token, 'client_id', 'user_id');
 
         for ($i = 0; $i < 10; $i++) {
             $token = 'token' . $i;
-            $this->assertTrue($this->redisClient->hget($token) == []);
+            $this->assertTrue($this->redisClient->getToken($token) == []);
             $token = $token . $token;
-            $this->assertFalse($this->redisClient->hget($token) == []);
+            $this->assertFalse($this->redisClient->getToken($token) == []);
         }
     }
 
@@ -151,9 +149,9 @@ class RedisTest extends TestCase
         sleep(5);
         for ($i = 0; $i < 10; $i++) {
             $token = 'token' . $i;
-            $this->assertTrue($this->redisClient->hget($token) == []);
+            $this->assertTrue($this->redisClient->getToken($token) == []);
             $token = $token . $token;
-            $this->assertTrue($this->redisClient->hget($token) == []);
+            $this->assertTrue($this->redisClient->getToken($token) == []);
         }
     }
 }
