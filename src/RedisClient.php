@@ -11,7 +11,7 @@ namespace monsterhunter\redis\relational;
 class RedisClient
 {
     /**
-     * @var \Predis\Client  |  Redis
+     * @var \Predis\Client | \Redis
      */
     public $client;
 
