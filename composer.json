@@ -1,5 +1,5 @@
 {
-  "name": "monsterhunter/redis-relational-database",
+  "name": "monsterhunter/oauth2-redis",
   "description": "redis-relational-database",
   "type": "library",
   "license": "MIT",
