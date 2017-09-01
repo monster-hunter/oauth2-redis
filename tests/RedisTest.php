@@ -123,7 +123,7 @@ class RedisTest extends TestCase
         $token = time();
         $expires = $token + 5 * 60;
         $value = ['access_token' => $token, 'client_id' => 'client_id', 'expires' => $expires, 'union_id' => 'union_id1', 'user_id' => 'user_id', 'scope' => '1'];
-        $this->redisClient->getToken($token, $value);
+        $this->redisClient->setToken($token, $value);
         $this->redisClient->deleteToken($token);
         $this->assertTrue($this->redisClient->getToken($token) == []);
     }
@@ -133,7 +133,7 @@ class RedisTest extends TestCase
         $token = time();
         $expires = $token + 5 * 60;
         $value = ['access_token' => $token, 'client_id' => 'client_id', 'expires' => $expires, 'union_id' => 'union_id1', 'user_id' => 'user_id', 'scope' => '1'];
-        $this->redisClient->getToken($token, $value);
+        $this->redisClient->setToken($token, $value);
         $this->redisClient->deleteOldUserClientToken($token, 'client_id', 'user_id');
 
         for ($i = 0; $i < 10; $i++) {

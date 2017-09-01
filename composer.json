@@ -9,13 +9,19 @@
       "email": "zhangjunwei@lianluo.com"
     }
   ],
-  "require-dev": {
-    "phpunit/phpunit": "~4.0",
+  "require": {
     "predis/predis": "^1.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.0"
   },
   "autoload": {
     "psr-4": {
-      "monsterhunter\\oauth2\\redis\\": "src",
+      "monsterhunter\\oauth2\\redis\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
       "monsterhunter\\oauth2\\redis\\tests\\": "tests"
     }
   },
