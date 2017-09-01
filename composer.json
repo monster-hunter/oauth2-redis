@@ -1,6 +1,6 @@
 {
   "name": "monsterhunter/oauth2-redis",
-  "description": "redis-relational-database",
+  "description": "oauth2-redis",
   "type": "library",
   "license": "MIT",
   "authors": [
