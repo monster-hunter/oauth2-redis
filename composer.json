@@ -15,8 +15,8 @@
   },
   "autoload": {
     "psr-4": {
-      "monsterhunter\\redis\\relational\\": "src",
-      "monsterhunter\\redis\\relational\\tests\\": "tests"
+      "monsterhunter\\oauth2\\redis\\": "src",
+      "monsterhunter\\oauth2\\redis\\tests\\": "tests"
     }
   },
   "repositories": [

@@ -6,9 +6,9 @@
  * Time: 上午10:14
  */
 
-namespace monsterhunter\redis\relational\tests;
+namespace monsterhunter\oauth2\redis\tests;
 
-use monsterhunter\redis\relational\RedisClient;
+use monsterhunter\oauth2\redis\RedisClient;
 
 class RedisTest extends TestCase
 {

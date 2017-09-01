@@ -6,7 +6,7 @@
  * Time: 下午3:59
  */
 
-namespace monsterhunter\redis\relational;
+namespace monsterhunter\oauth2\redis;
 
 class RedisClient
 {

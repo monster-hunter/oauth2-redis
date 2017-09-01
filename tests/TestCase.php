@@ -1,6 +1,6 @@
 <?php
 
-namespace monsterhunter\redis\relational\tests;
+namespace monsterhunter\oauth2\redis\tests;
 
 use pheme\settings\models\Setting;
 use PHPUnit_Framework_TestCase;
